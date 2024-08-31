@@ -34,11 +34,27 @@ use { "calebfroese/fzf-lua-zoxide",
 :lua require('fzf-lua-zoxide').open()
 ```
 
-or via the API
+or assign a keymapping
 
 ```lua
 vim.keymap.set("n", "<c-O>", require('fzf-lua-zoxide').open, { desc = "Fzf Dirs" })
 ```
+
+Options can be provided to `open`:
+
+```lua
+require('fzf-lua-zoxide').open({
+    ---@field preview? string The command to run in the preview window
+    preview = "ls -la {}",
+    ---@field callback? fun(selected: string) Callback to run on select
+    callback = function()
+        -- For example, you could open the directory in netrw after selecting one
+        vim.cmd("e " .. selected)
+    end,
+})
+```
+
+By default the plugin simply calls `ls {}` to populate the preview window.
 
 ## Configuration
 
