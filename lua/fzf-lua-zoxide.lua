@@ -30,10 +30,11 @@ end
 ---Opens a directory
 ---@class fzf_lua_zoxide.OpenOptions
 ---@field preview? string The command to run in the preview window
+---@field setcwd? boolean Whehther to change the cwd to the selected directory
 ---@field callback? fun(selected: string) Callback to run on select
 M.open = function(opts)
 	---@class fzf_lua_zoxide.OpenOptions
-	local o = vim.tbl_deep_extend("keep", opts or {}, { preview = "ls {}", callback = function() end })
+	local o = vim.tbl_deep_extend("keep", opts or {}, { preview = "ls {}", setcwd = true, callback = function() end })
 
 	local fzf_lua = require("fzf-lua")
 	fzf_lua.fzf_exec(string.format("%s query -l", M.zoxide), {
@@ -42,7 +43,9 @@ M.open = function(opts)
 		},
 		actions = {
 			["default"] = function(selected)
-				vim.cmd("cd " .. selected[1])
+				if o.setcwd then
+					vim.cmd("cd " .. selected[1])
+				end
 				o.callback(selected[1])
 			end,
 		},
